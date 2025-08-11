@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>URL Shortener - Stats</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="w-full max-w-lg bg-white rounded-2xl shadow-lg p-6 space-y-6">
+    <h1 class="text-2xl font-bold text-center">📊 URL Stats</h1>
+
+    <form id="statsForm" class="space-y-2">
+      <input type="text" id="codeInput" placeholder="Enter short code"
+             class="w-full border rounded-lg px-4 py-2" required>
+      <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg">Get Stats</button>
+    </form>
+
+    <div id="statsResult" class="hidden p-4 border rounded-lg bg-gray-50">
+      <p><strong>Original URL:</strong> <span id="statUrl"></span></p>
+      <p><strong>Created At:</strong> <span id="statCreated"></span></p>
+      <p><strong>Access Count:</strong> <span id="statCount"></span></p>
+    </div>
+
+    <p class="text-center text-sm">
+      👉 <a href="/" class="text-blue-600 underline">Go to Manage Page</a>
+    </p>
+  </div>
+
+  <script>
+    const base = "";
+
+    document.getElementById("statsForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const code = document.getElementById("codeInput").value;
+      const res = await fetch(`${base}/shorten/${code}/stats`);
+      if (res.ok) {
+        const data = await res.json();
+        document.getElementById("statUrl").textContent = data.url;
+        document.getElementById("statCreated").textContent = data.createdAt;
+        document.getElementById("statCount").textContent = data.accessCount;
+        document.getElementById("statsResult").classList.remove("hidden");
+      } else {
+        alert("Short code not found!");
+      }
+    });
+  </script>
+</body>
+</html>

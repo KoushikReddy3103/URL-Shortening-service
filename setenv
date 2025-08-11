@@ -1,0 +1,9 @@
+if [ -d .urlshort ];
+then
+    source .urlshort/bin/activate
+    pip install -r ./urlshorteningapp/requirements.txt
+else
+    python -m venv .urlshort
+    source .urlshort/bin/activate
+    pip install -r ./urlshorteningapp/requirements.txt
+fi

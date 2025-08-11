@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>URL Shortener - Manage</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="w-full max-w-lg bg-white rounded-2xl shadow-lg p-6 space-y-8">
+    <h1 class="text-2xl font-bold text-center">🔗 Manage Short URLs</h1>
+
+    <!-- CREATE -->
+    <section>
+      <h2 class="text-lg font-semibold mb-2">➕ Create Short URL</h2>
+      <form id="shortenForm" class="space-y-2">
+        <input type="url" id="urlInput" placeholder="Enter long URL"
+               class="w-full border rounded-lg px-4 py-2" required>
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg">Shorten</button>
+      </form>
+      <div id="result" class="hidden mt-2 p-3 border rounded-lg bg-gray-50 text-center">
+        <p>Your short URL:</p>
+        <a id="shortUrl" href="#" target="_blank" class="text-blue-600 font-semibold underline"></a>
+      </div>
+    </section>
+
+    <!-- UPDATE -->
+    <section>
+      <h2 class="text-lg font-semibold mb-2">✏️ Update Short URL</h2>
+      <form id="updateForm" class="space-y-2">
+        <input type="text" id="updateCode" placeholder="Short code"
+               class="w-full border rounded-lg px-4 py-2" required>
+        <input type="url" id="updateUrl" placeholder="New long URL"
+               class="w-full border rounded-lg px-4 py-2" required>
+        <button type="submit" class="w-full bg-yellow-500 text-white py-2 rounded-lg">Update</button>
+      </form>
+      <div id="updateResult" class="hidden mt-2 p-3 border rounded-lg bg-yellow-50">
+        ✅ Updated successfully!
+      </div>
+    </section>
+
+    <!-- DELETE -->
+    <section>
+      <h2 class="text-lg font-semibold mb-2">🗑️ Delete Short URL</h2>
+      <form id="deleteForm" class="space-y-2">
+        <input type="text" id="deleteCode" placeholder="Short code"
+               class="w-full border rounded-lg px-4 py-2" required>
+        <button type="submit" class="w-full bg-red-600 text-white py-2 rounded-lg">Delete</button>
+      </form>
+      <div id="deleteResult" class="hidden mt-2 p-3 border rounded-lg bg-red-50">
+        🗑️ Deleted successfully!
+      </div>
+    </section>
+
+    <p class="text-center text-sm mt-6">
+      👉 <a href="/stats" class="text-green-600 underline">Go to Stats Page</a>
+    </p>
+  </div>
+
+  <script>
+    // Base URL (same server)
+    const base = "";
+
+    // CREATE
+    document.getElementById("shortenForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const url = document.getElementById("urlInput").value;
+      const res = await fetch(`${base}/shorten`, {
+        method: "POST", headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ url })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const shortUrl = `${base}/${data.shortCode}`;
+        document.getElementById("shortUrl").textContent = shortUrl;
+        document.getElementById("shortUrl").href = shortUrl;
+        document.getElementById("result").classList.remove("hidden");
+      }
+    });
+
+    // UPDATE
+    document.getElementById("updateForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const code = document.getElementById("updateCode").value;
+      const newUrl = document.getElementById("updateUrl").value;
+      const res = await fetch(`${base}/shorten/${code}`, {
+        method: "PUT", headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ url: newUrl })
+      });
+      if (res.ok) {
+        document.getElementById("updateResult").classList.remove("hidden");
+      }
+    });
+
+    // DELETE
+    document.getElementById("deleteForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const code = document.getElementById("deleteCode").value;
+      const res = await fetch(`${base}/shorten/${code}`, { method: "DELETE" });
+      if (res.status === 204) {
+        document.getElementById("deleteResult").classList.remove("hidden");
+      }
+    });
+  </script>
+</body>
+</html>
