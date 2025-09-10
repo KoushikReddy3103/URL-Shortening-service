@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>URL Shortener - Manage</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { color: #333; }
+    input, button { padding: 8px; margin: 5px; }
+    .response { margin-top: 15px; padding: 10px; border: 1px solid #ccc;}
+  </style>
+  </head>
+<body>
+  <h1> URL Shortener (CRUD) </h1>
+
+  <h2>Create Short URL</h2>
+  <input type="text" id="createUrl" placeholder="Enter long URL">
+  <button onclick="updateUrl()">Update</button>
+
+  <h2>Delete Short URL</h2>
+  <input type="text" id="deleteCode" placeholder="Short Code">
+  <button onclick="deleteUrl()">Delete</button>
+
+  <div class="response" id="responseBox">Responses will appear here...</div>
+
+  <script>
+    async function createUrl() {
+      const url = document.getElementById('createUrl').value;
+      const res = await fetch("/shorten", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({url})
+      });
+      const data = await res.json();
+      document.getElementById("responseBox").innerText = JSON.stringify(data, null, 2);
+    }
+
+    async function updateUrl() {
+      const code = document.getElementById("updateCode").value;
+      const url = document.getElementById("updateUrl").value;
+      const res = await fetch(`/shorten/${code}`, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ url })
+      });
+      const data = await res.json();
+      document.getElementById("responseBox").innerText = JSON.stringify(data, null, 2);
+    }
+
+    async function deleteUrl() {
+      const code = document.getElementById("deleteCode").value;
+      const res = await fetch(`/shorten/${code}`, { method: "DELETE"});
+      if (res.status === 204) {
+        document.getElementById("responseBox").innerText = "Deleted successfully!";
+      } else {
+        const data = await res.json();
+        document.getElementById("responseBox").innerText = JSON.stringify(data, null, 2);
+      }
+    }
+  </script>
+</body>
+</html>

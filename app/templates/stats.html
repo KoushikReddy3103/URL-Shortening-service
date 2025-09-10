@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>URL Stats</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { color: #333; }
+    input, button { padding: 8px; margin: 5px; }
+    .stats-box { margin-top: 15px; padding: 10px; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <h1>Short URL Stats</h1>
+
+  <input type="text" id="statsCode" placeholder="Short Code">
+  <button onclick="getStats()">Get Stats</button>
+
+  <div class="stats-box" id="statsBox">Stats will appear here...</div>
+
+  <script>
+    async function getStats() {
+      const code = document.getElementById("statsCode").value;
+      const res = await fetch(`/shorten/${code}/stats`);
+      const data = await res.json();
+      document.getElementById("statsBox").innerText = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>
